@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "1069677615926",
+    "project_id": "agp-ziauddin-clinic",
+    "storage_bucket": "agp-ziauddin-clinic.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069677615926:android:3ba37dd2502a8787a97197",
+        "android_client_info": {
+          "package_name": "com.example.agp_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069677615926-s726237svn8b0fpdti1n1vsoh79bgd25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP7ZmpGHgyETgivvLOErz2dZ5mgZGAY7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069677615926-s726237svn8b0fpdti1n1vsoh79bgd25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1069677615926:android:cd2e9bc2660c57d2a97197",
+        "android_client_info": {
+          "package_name": "com.example.agp_ziauddin_virtual_clinic"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1069677615926-s726237svn8b0fpdti1n1vsoh79bgd25.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCP7ZmpGHgyETgivvLOErz2dZ5mgZGAY7U"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1069677615926-s726237svn8b0fpdti1n1vsoh79bgd25.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
