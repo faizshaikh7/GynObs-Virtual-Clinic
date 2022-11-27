@@ -1,4 +1,4 @@
-# agp_ziauddin_virtual_clinic
+# ziauddin_virtual_clinic
 
 A new Flutter project.
 
