@@ -122,7 +122,8 @@ class _PatientsScreenState extends State<VideoConsultationScreen> {
                                       showDialog(
                                           context: context,
                                           builder: (context) {
-                                            return ChannelNameDialog(int.parse(ds["code"].toString()));
+                                            return ChannelNameDialog(int.parse(
+                                                ds["code"].toString()));
                                           });
                                     },
                                     child: Row(
@@ -179,7 +180,7 @@ class _PatientsScreenState extends State<VideoConsultationScreen> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child:MaterialButton(
+                child: MaterialButton(
                   onPressed: onJoin,
                   child: Text('Join'),
                   color: Colors.green,

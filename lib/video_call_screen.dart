@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:agora_rtc_engine/rtc_engine.dart';
 import 'package:agora_rtc_engine/rtc_local_view.dart' as RtcLocalView;
@@ -7,7 +8,8 @@ const String appID = "ebb73771b5344f5abdb261993e74c21b";
 
 class VideoCallScreen extends StatefulWidget {
   final String channelName;
-  const VideoCallScreen({Key? key, required this.channelName}) : super(key: key);
+  const VideoCallScreen({Key? key, required this.channelName})
+      : super(key: key);
 
   @override
   _CallPageState createState() => _CallPageState();
@@ -228,7 +230,7 @@ class _CallPageState extends State<VideoCallScreen> {
           RawMaterialButton(
             onPressed: _onSwitchCamera,
             child: Icon(
-              Icons.switch_camera,
+              CupertinoIcons.switch_camera,
               color: Colors.blueAccent,
               size: 20.0,
             ),

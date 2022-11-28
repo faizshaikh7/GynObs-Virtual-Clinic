@@ -4,6 +4,7 @@ import 'package:agp_ziauddin_virtual_clinic/chat_list_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/constants/colors.dart';
 import 'package:agp_ziauddin_virtual_clinic/database_methods.dart';
 import 'package:agp_ziauddin_virtual_clinic/doctor_profile_screen.dart';
+import 'package:agp_ziauddin_virtual_clinic/emergency_video_call.dart';
 import 'package:agp_ziauddin_virtual_clinic/emnoc_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/main.dart';
 import 'package:agp_ziauddin_virtual_clinic/patients_screen.dart';
@@ -12,9 +13,11 @@ import 'package:agp_ziauddin_virtual_clinic/splash_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/training_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/upload_prescription_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/upload_report_screen.dart';
+import 'package:agp_ziauddin_virtual_clinic/video_call_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/video_consultation_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/widgets/custom_widgets.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -27,6 +30,11 @@ class DoctorAppointmentScreen extends StatefulWidget {
 
 class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
   GlobalKey<ScaffoldState> dKey = GlobalKey<ScaffoldState>();
+
+  final String headDoctorCode = "9012";
+  final String headDoctorEmail = "zukemari@email.com";
+
+  final String testCode = "9219";
 
   @override
   Widget build(BuildContext context) {
@@ -151,61 +159,79 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
               ],
             ),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                    color: white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25),
-                    )),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 40, vertical: 30),
-                  child: Column(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Item(Icons.file_copy, "Reports", () {
-                            goto(context, ReportsScreen());
-                          }, Colors.green),
-                          Item(Icons.person, "Patients", () {
-                            goto(context, PatientsScreen());
-                          }, Colors.blue[900]),
-                        ],
-                      ),
-                      VSpace(20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Item(Icons.book, "Upload Prescription", () {
-                            goto(context, UploadReportScreen());
-                          }, Colors.orange),
-                          Item(Icons.computer, "Symptom Checker", () async {
-                            String url =
-                                "https://www.mdcalc.com/calc/423/pregnancy-due-dates-calculator";
-                            if (!await launchUrl(Uri.parse(url))) {
-                              throw 'Could not launch $url';
-                            }
-                          }, Colors.purple[900]),
-                        ],
-                      ),
-                      VSpace(20),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Item(Icons.model_training, "Training", () {
-                            goto(context, TrainingScreen());
-                          }, Colors.cyan[900]),
-                          Item(Icons.pregnant_woman, "EmNOC", () {
-                            goBack(context);
-                            goto(context, EMNOCScreen());
-                          }, Colors.teal[900])
-                        ],
-                      )
-                    ],
+              child: SingleChildScrollView(
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                      )),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 40, vertical: 30),
+                    child: Column(
+                      // mainAxisAlignment: MainAxisAlignment.center,
+                      // crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Item(Icons.file_copy, "Reports", () {
+                              goto(context, ReportsScreen());
+                            }, Colors.green),
+                            Item(Icons.person, "Patients", () {
+                              goto(context, PatientsScreen());
+                            }, Colors.blue[900]),
+                          ],
+                        ),
+                        VSpace(20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Item(Icons.book, "Upload Prescription", () {
+                              goto(context, UploadReportScreen());
+                            }, Colors.orange),
+                            Item(Icons.computer, "Symptom Checker", () async {
+                              String url =
+                                  "https://www.mdcalc.com/calc/423/pregnancy-due-dates-calculator";
+                              if (!await launchUrl(Uri.parse(url))) {
+                                throw 'Could not launch $url';
+                              }
+                            }, Colors.purple[900]),
+                          ],
+                        ),
+                        VSpace(20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Item(Icons.model_training, "Training", () {
+                              goto(context, TrainingScreen());
+                            }, Colors.cyan[900]),
+                            Item(Icons.pregnant_woman, "EmNOC", () {
+                              goBack(context);
+                              goto(context, EMNOCScreen());
+                            }, Colors.teal[900])
+                          ],
+                        ),
+                        VSpace(20),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Item(
+                              Icons.emergency_recording_rounded,
+                              "Doctor Emergency",
+                              () {
+                                // goBack(context);
+                                // goto(context,
+                                //     VideoCallScreen(channelName: testCode));
+                              },
+                              Colors.red[900],
+                            )
+                          ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -243,7 +269,7 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
               Text(
                 title,
                 textAlign: TextAlign.center,
-              )
+              ),
             ],
           ),
         ),

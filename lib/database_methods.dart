@@ -10,8 +10,6 @@ class DatabaseMethods {
         .set(userInfoMap);
   }
 
-
-
   Future createChatRoom(
       String chatRoomId, Map<String, dynamic> chatRoomInfoMap) async {
     final snapshot = await FirebaseFirestore.instance
@@ -44,8 +42,11 @@ class DatabaseMethods {
 
   Future<Stream<QuerySnapshot>> getPatientReports() async {
     return FirebaseFirestore.instance
-        .collection(prefs!.getString("type")=="Doctor"?"reports":"precriptions")
-        .where(prefs!.getString("type")=="Doctor"?"doctor_id":"patient_id", isEqualTo: prefs!.getString("id"))
+        .collection(
+            prefs!.getString("type") == "Doctor" ? "reports" : "precriptions")
+        .where(
+            prefs!.getString("type") == "Doctor" ? "doctor_id" : "patient_id",
+            isEqualTo: prefs!.getString("id"))
         .snapshots();
   }
 
@@ -63,12 +64,6 @@ class DatabaseMethods {
         .set(messageInfoMap);
   }
 
-
-
-
-
-
-
   Future<Stream<QuerySnapshot>> getMessages(String chatRoomId) async {
     return FirebaseFirestore.instance
         .collection("chatrooms")
@@ -77,8 +72,6 @@ class DatabaseMethods {
         .orderBy("ts", descending: true)
         .snapshots();
   }
-
- 
 
   Future<Stream<QuerySnapshot>> searchCategoriesByPrice(
       String colName, int price) async {
@@ -99,10 +92,7 @@ class DatabaseMethods {
         .collection(col1)
         .doc(doc)
         .collection(col2)
-        .orderBy("ts",descending: false)
+        .orderBy("ts", descending: false)
         .snapshots();
   }
-
-  
-
 }
