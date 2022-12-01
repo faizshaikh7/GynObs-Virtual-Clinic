@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:agp_ziauddin_virtual_clinic/about_us_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/add_patient_screen.dart';
+import 'package:agp_ziauddin_virtual_clinic/notification/awesome_notification.dart';
+import 'package:agp_ziauddin_virtual_clinic/services/api_and_notification_service.dart';
 import 'package:agp_ziauddin_virtual_clinic/chat_list_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/constants/colors.dart';
 import 'package:agp_ziauddin_virtual_clinic/database_methods.dart';
@@ -11,15 +15,13 @@ import 'package:agp_ziauddin_virtual_clinic/patients_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/reports_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/splash_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/training_screen.dart';
-import 'package:agp_ziauddin_virtual_clinic/upload_prescription_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/upload_report_screen.dart';
-import 'package:agp_ziauddin_virtual_clinic/video_call_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/video_consultation_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/widgets/custom_widgets.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:developer' as console;
 
 class DoctorAppointmentScreen extends StatefulWidget {
   const DoctorAppointmentScreen({Key? key}) : super(key: key);
@@ -33,8 +35,42 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
 
   final String headDoctorCode = "9012";
   final String headDoctorEmail = "zukemari@email.com";
+  final String roomId = "9219";
 
-  final String testCode = "9219";
+  String? notificationToken;
+
+  _emergencyCallFunc(BuildContext context) {
+    // goBack(context);
+    // goto(
+    //     context,
+    //     VideoCallScreen(
+    //         channelName: "")); // ADD CURRENT USER CODE IN CHANNEL NAME!
+    NotificationServices().sendPushMessage(notificationToken);
+    goBack(context);
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EmergencyVideoCall(),
+        ));
+  }
+
+  getNotificationToken() async {
+    await FirebaseMessaging.instance.getToken().then((value) {
+      setState(() {
+        notificationToken = value;
+        console.log(notificationToken ?? "Token is Null");
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    NotificationServices().requestPermission();
+    getNotificationToken();
+    CustomAwesomeNotification().listen(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -222,9 +258,7 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
                               Icons.emergency_recording_rounded,
                               "Doctor Emergency",
                               () {
-                                // goBack(context);
-                                // goto(context,
-                                //     VideoCallScreen(channelName: testCode));
+                                _emergencyCallFunc(context);
                               },
                               Colors.red[900],
                             )

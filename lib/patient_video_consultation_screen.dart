@@ -13,6 +13,10 @@ class PatientVideoConsultationScreen extends StatefulWidget {
   State<PatientVideoConsultationScreen> createState() => _PatientsScreenState();
 }
 
+String? userName;
+String? userCode;
+String? userEmail;
+
 class _PatientsScreenState extends State<PatientVideoConsultationScreen> {
   var doctorsStream;
   final _channelController = TextEditingController();
@@ -56,6 +60,7 @@ class _PatientsScreenState extends State<PatientVideoConsultationScreen> {
                         itemCount: snapshot.data!.docs.length,
                         itemBuilder: ((context, index) {
                           DocumentSnapshot ds = snapshot.data!.docs[index];
+                          userData() {}
                           return Card(
                             color: white,
                             shape: RoundedRectangleBorder(
