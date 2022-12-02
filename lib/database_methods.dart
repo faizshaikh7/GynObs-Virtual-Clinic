@@ -1,5 +1,8 @@
+import 'dart:developer' as console;
 import 'package:agp_ziauddin_virtual_clinic/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/widgets.dart';
 
 class DatabaseMethods {
   Future addUserInfoToDB(
@@ -9,6 +12,42 @@ class DatabaseMethods {
         .doc(userId)
         .set(userInfoMap);
   }
+
+  Future updateUserInfoToDB(
+      String colName, String userId, Map<String, dynamic> userInfoMap) async {
+    return await FirebaseFirestore.instance
+        .collection(colName)
+        .doc(userId)
+        .update(userInfoMap);
+  }
+
+  // getUserInfoFromDB() async {
+  //   var currentUserUID = await FirebaseAuth.instance.currentUser!.uid;
+  //   console.log("this is your UID $currentUserUID");
+  //   print("this is your UID $currentUserUID");
+
+  //   print("After");
+  //   CollectionReference users =
+  //       FirebaseFirestore.instance.collection("doctors");
+
+  //   return FutureBuilder<DocumentSnapshot>(
+  //     future: users.doc(currentUserUID).get(),
+  //     builder: ((context, snapshot) {
+  //       print("yoooo");
+  //       if (snapshot.connectionState == ConnectionState.done) {
+  //         Map<String, dynamic> data =
+  //             snapshot.data!.data() as Map<String, dynamic>;
+  //         console.log(
+  //             "work in this Hospital : ${data['hospital'] ?? 'danbdjahdjaeoudoa'}");
+  //         print(
+  //             "work in this Hospital : ${data['hospital'] ?? 'danbdjahdjaeoudoa'}");
+  //       }
+  //       console.log("Failed To Fetch Data");
+  //       print("Failed To Fetch Data");
+  //       return Container();
+  //     }),
+  //   );
+  // }
 
   Future createChatRoom(
       String chatRoomId, Map<String, dynamic> chatRoomInfoMap) async {

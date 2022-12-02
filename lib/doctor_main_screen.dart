@@ -5,7 +5,10 @@ import 'package:agp_ziauddin_virtual_clinic/constants/colors.dart';
 import 'package:agp_ziauddin_virtual_clinic/training_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/video_consultation_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/widgets/custom_widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as console;
 
 class DoctorMainScreen extends StatefulWidget {
   const DoctorMainScreen({Key? key}) : super(key: key);
@@ -22,6 +25,30 @@ class _AllScreensState extends State<DoctorMainScreen> {
     TrainingScreen(),
   ];
   int currentIndex = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // getData();
+  }
+
+  // dynamic data1;
+
+  // Future<dynamic> getData() async {
+  //   final DocumentReference document = FirebaseFirestore.instance
+  //       .collection("doctors")
+  //       .doc('IfJmpFsjsTRY3ddUDPkglP48CHY2');
+
+  //   await document.get().then<dynamic>(
+  //     (DocumentSnapshot snapshot) async {
+  //       setState(() {
+  //         data1 = snapshot.data;
+  //       });
+  //     },
+  //   );
+  // }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -16,12 +16,22 @@ import 'package:agp_ziauddin_virtual_clinic/reports_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/splash_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/training_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/upload_report_screen.dart';
+import 'package:agp_ziauddin_virtual_clinic/video_call_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/video_consultation_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/widgets/custom_widgets.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:developer' as console;
+
+var currentUserEmail = "";
+var currentUserCity = "";
+var currentUserRoomID = "";
+var currentUserHospital = "";
+var currentUserName = "";
+var currentUserUID = "";
 
 class DoctorAppointmentScreen extends StatefulWidget {
   const DoctorAppointmentScreen({Key? key}) : super(key: key);
@@ -40,25 +50,35 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
   String? notificationToken;
 
   _emergencyCallFunc(BuildContext context) {
-    // goBack(context);
-    // goto(
-    //     context,
-    //     VideoCallScreen(
-    //         channelName: "")); // ADD CURRENT USER CODE IN CHANNEL NAME!
-    NotificationServices().sendPushMessage(notificationToken);
     goBack(context);
-    Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => EmergencyVideoCall(),
-        ));
+    goto(context, VideoCallScreen(channelName: "$currentUserRoomID"));
+    NotificationServices().sendPushMessage(notificationToken);
+    // goBack(context);
+    // Navigator.push(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => EmergencyVideoCall(),
+    //     ));
   }
 
   getNotificationToken() async {
-    await FirebaseMessaging.instance.getToken().then((value) {
+    await FirebaseMessaging.instance.getToken().then((fcmToken) {
       setState(() {
-        notificationToken = value;
-        console.log(notificationToken ?? "Token is Null");
+        var currentUser = FirebaseAuth.instance.currentUser;
+        console.log("CURRENT USER EMAIL => ${currentUser!.email}");
+
+        if (currentUser.email == "faizshaikh@gmail.com") {
+          // change email after testing^^
+          DatabaseMethods().updateUserInfoToDB(
+            "doctors",
+            currentUser.uid,
+            {
+              "fcm_token": fcmToken,
+            },
+          );
+          notificationToken = fcmToken;
+          console.log(notificationToken ?? "Token is Null");
+        }
       });
     });
   }
@@ -70,6 +90,29 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
     NotificationServices().requestPermission();
     getNotificationToken();
     CustomAwesomeNotification().listen(context);
+    // DatabaseMethods().getUserInfoFromDB();
+
+    var uid = FirebaseAuth.instance.currentUser!.uid;
+    currentUserUID = uid;
+    CollectionReference users =
+        FirebaseFirestore.instance.collection("doctors");
+
+    var data = users.doc(currentUserUID).get();
+
+    data.then((data) {
+      currentUserEmail = data["email"];
+      currentUserName = data["name"];
+      currentUserRoomID = data["code"].toString();
+      currentUserHospital = data["hospital"];
+      currentUserCity = data["city"];
+
+      print(currentUserName);
+      print(currentUserEmail);
+      print(currentUserRoomID);
+      print(currentUserHospital);
+      print(currentUserUID);
+      print(currentUserCity);
+    });
   }
 
   @override

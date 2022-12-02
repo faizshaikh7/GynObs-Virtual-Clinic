@@ -1,8 +1,12 @@
+import 'package:agp_ziauddin_virtual_clinic/database_methods.dart';
+import 'package:agp_ziauddin_virtual_clinic/doctor_appointment_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/doctor_main_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/other_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/patient_main_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/splash_screen.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'dart:developer' as console;
@@ -21,8 +25,13 @@ Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
     content: NotificationContent(
       id: 10,
       channelKey: "basic_channel", // Check here if not work
-      title: "Faiz Shaikh",
-      body: "9653179521",
+      title: "Unknown",
+      // body: "9712",
+      wakeUpScreen: true,
+      fullScreenIntent: true,
+      displayOnBackground: true,
+      displayOnForeground: true,
+      locked: true,
     ),
     actionButtons: [
       NotificationActionButton(
@@ -34,7 +43,7 @@ Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
       ),
       NotificationActionButton(
         key: 'accept-$roomId',
-        label: "Accept",
+        label: "Answer",
         enabled: true,
         buttonType: ActionButtonType.Default,
         color: Colors.green,
@@ -51,10 +60,12 @@ void main() async {
       NotificationChannel(
         channelGroupKey: 'basic_channel_group',
         channelKey: "basic_channel", // Check here if not work
-        channelName: 'Whatsapp',
-        channelDescription: 'Whatsapp calling',
+        channelName: 'agp_clinic',
+        channelDescription: 'video calling',
         defaultColor: Colors.green,
         ledColor: Colors.white,
+        enableVibration: true,
+        defaultRingtoneType: DefaultRingtoneType.Alarm,
       ),
     ],
     channelGroups: [
@@ -83,6 +94,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   bool? checkLogin;
   String? isPatient;
+
   @override
   void initState() {
     // TODO: implement initState
