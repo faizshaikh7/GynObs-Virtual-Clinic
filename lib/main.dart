@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:agp_ziauddin_virtual_clinic/database_methods.dart';
 import 'package:agp_ziauddin_virtual_clinic/doctor_appointment_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/doctor_main_screen.dart';
@@ -13,25 +16,31 @@ import 'dart:developer' as console;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
-  console.log("Message Recive to Surgen");
-  console.log("Background: message => ${event.toString()}");
-  final String headDoctorCode = "9012";
-  final String headDoctorEmail = "zukemari@email.com";
+String callerName = "Unknown";
+var callerRoomID = "";
+var callerHospital = "";
 
-  final String roomId = "9219";
+Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
+  console.log("surgen Recive's $callerName message");
+  console.log("Background: message => ${message.toString()}");
+  log("BG Message data: ${message.data}");
+  callerName = message.data["name"];
+  callerRoomID = message.data["room_id"];
+  callerHospital = message.data["hospital"] ?? "Freelancer";
 
   AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: 10,
-      channelKey: "basic_channel", // Check here if not work
-      title: "Unknown",
-      // body: "9712",
+      channelKey: "basic_channel",
+      title: callerName,
+      body: "from $callerHospital",
       wakeUpScreen: true,
       fullScreenIntent: true,
       displayOnBackground: true,
       displayOnForeground: true,
       locked: true,
+      // customSound:
+      //     "https://open.spotify.com/track/68EkhVWIeULhHxcbi1QhzK?si=668ffccbfff94980",
     ),
     actionButtons: [
       NotificationActionButton(
@@ -42,7 +51,7 @@ Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
         buttonType: ActionButtonType.Default,
       ),
       NotificationActionButton(
-        key: 'accept-$roomId',
+        key: 'accept-$callerRoomID',
         label: "Answer",
         enabled: true,
         buttonType: ActionButtonType.Default,
@@ -50,6 +59,53 @@ Future<void> myBackgroundMessageHandler(RemoteMessage event) async {
       )
     ],
   );
+}
+
+Future<void> getFCMData(RemoteMessage message) async {
+  log("InApp Message data: ${message.data}");
+  callerName = message.data["name"];
+  callerRoomID = message.data["room_id"];
+  callerHospital = message.data["hospital"] ?? "Freelancer";
+
+  log(callerName);
+  log(callerRoomID);
+  log(callerHospital);
+
+  AwesomeNotifications().createNotification(
+    content: NotificationContent(
+      id: 10,
+      channelKey: "basic_channel", // Check here if not work
+      title: callerName,
+      body: callerHospital,
+      wakeUpScreen: true,
+      fullScreenIntent: true,
+      displayOnBackground: true,
+      displayOnForeground: true,
+      locked: true,
+      // customSound:
+      //     "https://open.spotify.com/track/68EkhVWIeULhHxcbi1QhzK?si=668ffccbfff94980",
+    ),
+    actionButtons: [
+      NotificationActionButton(
+        key: "decline",
+        enabled: true,
+        label: "Decline",
+        isDangerousOption: true,
+        buttonType: ActionButtonType.Default,
+      ),
+      NotificationActionButton(
+        key: 'accept-$callerRoomID',
+        label: "Answer",
+        enabled: true,
+        buttonType: ActionButtonType.Default,
+        color: Colors.green,
+      )
+    ],
+  );
+
+  if (message.notification != null) {
+    print('Message also contained a notification: ${message.notification}');
+  }
 }
 
 void main() async {
@@ -66,6 +122,9 @@ void main() async {
         ledColor: Colors.white,
         enableVibration: true,
         defaultRingtoneType: DefaultRingtoneType.Alarm,
+        // playSound: true,
+        // soundSource:
+        //     "https://open.spotify.com/track/68EkhVWIeULhHxcbi1QhzK?si=668ffccbfff94980",
       ),
     ],
     channelGroups: [
@@ -76,8 +135,10 @@ void main() async {
     ],
     debug: true,
   );
+
   prefs = await SharedPreferences.getInstance();
   await Firebase.initializeApp();
+  FirebaseMessaging.onMessage.listen(getFCMData);
   FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
   runApp(const MyApp());
 }
@@ -107,7 +168,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: "EmNOC A2Z",
+      title: "A2Z GynObs",
       theme: ThemeData(primarySwatch: Colors.green),
       home: checkLogin == true
           ? isPatient == "Doctor"

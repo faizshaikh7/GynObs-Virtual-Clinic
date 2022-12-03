@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:agp_ziauddin_virtual_clinic/about_us_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/add_patient_screen.dart';
+import 'package:agp_ziauddin_virtual_clinic/doctor_main_screen.dart';
 import 'package:agp_ziauddin_virtual_clinic/notification/awesome_notification.dart';
 import 'package:agp_ziauddin_virtual_clinic/services/api_and_notification_service.dart';
 import 'package:agp_ziauddin_virtual_clinic/chat_list_screen.dart';
@@ -23,6 +24,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:developer' as console;
 
@@ -48,11 +50,15 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
   final String roomId = "9219";
 
   String? notificationToken;
+  String? testNotificationToken;
 
-  _emergencyCallFunc(BuildContext context) {
-    goBack(context);
-    goto(context, VideoCallScreen(channelName: "$currentUserRoomID"));
-    NotificationServices().sendPushMessage(notificationToken);
+  _emergencyCallFunc(BuildContext context) async {
+    await Permission.camera.request();
+    await Permission.microphone.request();
+    goBack(context); // FIX GOO BACKK WALA THING
+    goto(context, VideoCallScreen(channelName: currentUserRoomID));
+    // NotificationServices().sendPushMessage(notificationToken);
+    NotificationServices().sendPushMessage(testNotificationToken);
     // goBack(context);
     // Navigator.push(
     //     context,
@@ -76,8 +82,7 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
               "fcm_token": fcmToken,
             },
           );
-          notificationToken = fcmToken;
-          console.log(notificationToken ?? "Token is Null");
+          console.log(fcmToken ?? "Token is Null");
         }
       });
     });
@@ -92,8 +97,38 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
     CustomAwesomeNotification().listen(context);
     // DatabaseMethods().getUserInfoFromDB();
 
+    // Testing FCM Token
+    CollectionReference surgenDoctorCollection =
+        FirebaseFirestore.instance.collection("doctors");
+
+    var testingSurgenDoctorData =
+        surgenDoctorCollection.doc("IfJmpFsjsTRY3ddUDPkglP48CHY2").get();
+
+    testingSurgenDoctorData.then((fieldsValue) => {
+          testNotificationToken = fieldsValue["fcm_token"],
+          print("Testing FCM TOKEN ===> ${fieldsValue["name"]}"),
+          print("Testing FCM TOKEN ===> ${fieldsValue["fcm_token"]}"),
+        });
+    // Testing FCM Token
+
+    // CURRENT SURGEN DATA DATA START
+    // CollectionReference surgenDoctorCollection =
+    //     FirebaseFirestore.instance.collection("doctors");
+
+    // var surgenDoctorData =
+    //     surgenDoctorCollection.doc("4aweZpdCXeUyyqZgzcXSWNoXl912").get();
+
+    // surgenDoctorData.then((fieldsValue) => {
+    //       notificationToken = fieldsValue["fcm_token"],
+    //       print("Surgens FCM TOKEN ===> ${fieldsValue["name"]}"),
+    //       print("Surgens FCM TOKEN ===> ${fieldsValue["fcm_token"]}"),
+    //     });
+    // CURRENT SURGEN DATA DATA END
+
+    // CURRENT USER DATA START
     var uid = FirebaseAuth.instance.currentUser!.uid;
     currentUserUID = uid;
+
     CollectionReference users =
         FirebaseFirestore.instance.collection("doctors");
 
@@ -113,6 +148,7 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
       print(currentUserUID);
       print(currentUserCity);
     });
+    // CURRENT USER DATA END
   }
 
   @override

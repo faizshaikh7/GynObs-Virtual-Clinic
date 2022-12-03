@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:agp_ziauddin_virtual_clinic/main.dart';
 import 'package:agp_ziauddin_virtual_clinic/video_call_screen.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
@@ -19,14 +20,8 @@ class CustomAwesomeNotification {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) => VideoCallScreen(
-                channelName:
-                    "Current User Code Who calls", // Rookie Doctor Code Whos Calling
+                channelName: callerRoomID, // Rookie Doctor Code Whos Calling
               ),
-              // CallAcceptDeclinePage(
-              //   user: user,
-              //   callStatus: CallStatus.accepted,
-              //   roomId: message.buttonKeyPressed.replaceAll("accept-", ""),
-              // ),
             ),
           );
         } else if (message.buttonKeyPressed == "decline") {

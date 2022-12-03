@@ -1,10 +1,13 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'package:agp_ziauddin_virtual_clinic/doctor_appointment_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as console;
 import 'package:flutter/foundation.dart';
 
 class NotificationServices {
+  // fatch doctor fcm token from firebase -- IMPORTANT
   final String fcmTestToken =
       "fZrw96KNS-Gg1HveRR_D54:APA91bHLPlYpiIE0bDtHtR9c5oC90KQ4XXmmqTZdzok6WdOuWrDasBwsRAh-YOMztyEBDztBpOJKfCvpYV1ixEZL-7kbI6g8AcPsb2DEDtQ_Zenlrjem-x6CX_jZ0FxUuxF17u0CjBnU";
 
@@ -22,17 +25,15 @@ class NotificationServices {
         body: jsonEncode(
           <String, dynamic>{
             "priority": "high",
+            // SEND CURRENT USER DATA VIA API
             "data": <String, dynamic>{
               "click_action": "FLUTTER_NOTIFICATION_CLICKED",
               "status": "done",
-              "body": "hello world Yo",
-              "title": "One Piece is Real"
+              "name": currentUserName,
+              "room_id": currentUserRoomID,
+              "hospital": currentUserHospital,
             },
-            // "notification": <String, dynamic>{
-            //   "title": "One Piece is Real",
-            //   "body": "hello world Yo",
-            // },
-            "to": fcmTestToken,
+            "to": fcmToken,
           },
         ),
       );
