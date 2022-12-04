@@ -4,7 +4,7 @@ import 'package:agp_ziauddin_virtual_clinic/video_call_screen.dart';
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:developer' as console;
-
+import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 
 class CustomAwesomeNotification {
@@ -14,9 +14,11 @@ class CustomAwesomeNotification {
     await _actionStreamSubscription?.cancel();
 
     _actionStreamSubscription = AwesomeNotifications().actionStream.listen(
-      (message) {
+      (message) async {
         if (message.buttonKeyPressed.startsWith("accept")) {
           console.log("Call Accepted");
+          await Permission.camera.request();
+          await Permission.microphone.request();
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) => VideoCallScreen(

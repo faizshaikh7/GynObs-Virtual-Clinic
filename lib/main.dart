@@ -17,8 +17,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 String callerName = "Unknown";
-var callerRoomID = "";
-var callerHospital = "";
+String callerRoomID = "";
+String callerHospital = "";
 
 Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
   console.log("surgen Recive's $callerName message");
@@ -31,7 +31,7 @@ Future<void> myBackgroundMessageHandler(RemoteMessage message) async {
   AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: 10,
-      channelKey: "basic_channel",
+      channelKey: "call_channel",
       title: callerName,
       body: "from $callerHospital",
       wakeUpScreen: true,
@@ -74,7 +74,7 @@ Future<void> getFCMData(RemoteMessage message) async {
   AwesomeNotifications().createNotification(
     content: NotificationContent(
       id: 10,
-      channelKey: "basic_channel", // Check here if not work
+      channelKey: "call_channel", // Check here if not work
       title: callerName,
       body: callerHospital,
       wakeUpScreen: true,
@@ -114,14 +114,14 @@ void main() async {
     null,
     [
       NotificationChannel(
-        channelGroupKey: 'basic_channel_group',
-        channelKey: "basic_channel", // Check here if not work
+        channelGroupKey: 'call_channel_group',
+        channelKey: "call_channel",
         channelName: 'agp_clinic',
         channelDescription: 'video calling',
         defaultColor: Colors.green,
         ledColor: Colors.white,
         enableVibration: true,
-        defaultRingtoneType: DefaultRingtoneType.Alarm,
+        defaultRingtoneType: DefaultRingtoneType.Ringtone,
         // playSound: true,
         // soundSource:
         //     "https://open.spotify.com/track/68EkhVWIeULhHxcbi1QhzK?si=668ffccbfff94980",
@@ -130,7 +130,7 @@ void main() async {
     channelGroups: [
       NotificationChannelGroup(
         channelGroupName: "Basic Group",
-        channelGroupkey: 'basic_channel_group',
+        channelGroupkey: 'call_channel_group',
       ),
     ],
     debug: true,
