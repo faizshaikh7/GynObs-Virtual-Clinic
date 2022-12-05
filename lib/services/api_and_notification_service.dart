@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:math';
 import 'package:agp_ziauddin_virtual_clinic/doctor_appointment_screen.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
@@ -14,7 +15,7 @@ class NotificationServices {
   final String authorizationServerKey =
       "key=AAAA-Q3BGzY:APA91bH_cLGZQXjGQ85b4S_EmlbAIoca80WD9UIPlqYyTJDAmy2ptrYPcSfnbMgmHmiZ9gV_sLKNKy4HGcoVjip-qgeOUjBulCIQllAn_mW8suir4B2DS-NBT2Vq6Ov5w2bfLEhqClP0";
 
-  void sendPushMessage(fcmToken) async {
+  Future<String> sendPushMessage(fcmToken) async {
     try {
       await http.post(
         Uri.parse("https://fcm.googleapis.com/fcm/send"),
@@ -38,11 +39,9 @@ class NotificationServices {
         ),
       );
     } catch (e) {
-      if (kDebugMode) {
-        console.log("error push notification");
-      }
+      return e.toString();
     }
-
+    return "";
     // API #2
 
     //   var headersList = {

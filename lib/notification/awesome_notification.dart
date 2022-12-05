@@ -7,12 +7,16 @@ import 'dart:developer' as console;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 
+bool alreadyListening = false;
+
 class CustomAwesomeNotification {
   StreamSubscription<ReceivedAction>? _actionStreamSubscription;
-
   void listen(context) async {
     await _actionStreamSubscription?.cancel();
-
+    if (alreadyListening) {
+      return;
+    }
+    alreadyListening = true;
     _actionStreamSubscription = AwesomeNotifications().actionStream.listen(
       (message) async {
         if (message.buttonKeyPressed.startsWith("accept")) {
@@ -22,7 +26,8 @@ class CustomAwesomeNotification {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) => VideoCallScreen(
-                channelName: callerRoomID, // Rookie Doctor Code Whos Calling
+                channelName: message.buttonKeyPressed
+                    .split("-")[1], // Rookie Doctor Code Whos Calling
               ),
             ),
           );

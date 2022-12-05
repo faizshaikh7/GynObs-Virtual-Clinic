@@ -52,19 +52,24 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
   String? notificationToken;
   String? testNotificationToken;
 
-  _emergencyCallFunc(BuildContext context) async {
+  void _emergencyCallFunc(BuildContext context) async {
+    // NotificationServices().sendPushMessage(notificationToken);
+    var err =
+        await NotificationServices().sendPushMessage(testNotificationToken);
+    if (err != "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            err.toString(),
+          ),
+        ),
+      );
+      return;
+    }
     await Permission.camera.request();
     await Permission.microphone.request();
-    goBack(context); // FIX GOO BACKK WALA THING
+    // goBack(context); // FIX GOO BACKK WALA THING
     goto(context, VideoCallScreen(channelName: currentUserRoomID));
-    // NotificationServices().sendPushMessage(notificationToken);
-    NotificationServices().sendPushMessage(testNotificationToken);
-    // goBack(context);
-    // Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => EmergencyVideoCall(),
-    //     ));
   }
 
   getNotificationToken() async {
@@ -73,7 +78,7 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
         var currentUser = FirebaseAuth.instance.currentUser;
         console.log("CURRENT USER EMAIL => ${currentUser!.email}");
 
-        if (currentUser.email == "faizshaikh@gmail.com") {
+        if (currentUser.email == "zukemari@email.com") {
           // change email after testing^^
           DatabaseMethods().updateUserInfoToDB(
             "doctors",
@@ -97,19 +102,23 @@ class _AppointmentScreenState extends State<DoctorAppointmentScreen> {
     CustomAwesomeNotification().listen(context);
     // DatabaseMethods().getUserInfoFromDB();
 
-    // Testing FCM Token
+    // Surgen FCM Token
     CollectionReference surgenDoctorCollection =
         FirebaseFirestore.instance.collection("doctors");
 
     var testingSurgenDoctorData =
-        surgenDoctorCollection.doc("IfJmpFsjsTRY3ddUDPkglP48CHY2").get();
+        surgenDoctorCollection.doc("4aweZpdCXeUyyqZgzcXSWNoXl912").get();
 
     testingSurgenDoctorData.then((fieldsValue) => {
-          testNotificationToken = fieldsValue["fcm_token"],
+          // remove setstate if getting any err
+          setState(() {
+            testNotificationToken = fieldsValue["fcm_token"];
+          }),
           print("Testing FCM TOKEN ===> ${fieldsValue["name"]}"),
-          print("Testing FCM TOKEN ===> ${fieldsValue["fcm_token"]}"),
+          print(
+              "Testing FCM TOKEN ===> ${fieldsValue["fcm_token"]}"), // check err
         });
-    // Testing FCM Token
+    // Surgen FCM Token
 
     // CURRENT SURGEN DATA DATA START
     // CollectionReference surgenDoctorCollection =
